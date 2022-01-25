@@ -1,17 +1,21 @@
-# coding=utf-8
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from get_distances import *
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print("Hi, {0}".format(name))  # Press ⌘F8 to toggle the breakpoint.
+def go():
+    number_threads = 10
+    get_distance_instance = GetDistances(dict_coordinates, places_names)
+    get_distance_instance.run_threads(number_threads)
+    np.save('/Users/miller/Desktop/MAP2/data/distances.npy', get_distance_instance.distances)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    go()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    dist = np.load('/Users/miller/Desktop/MAP2/data/distances.npy', allow_pickle=True)
+
+    c = 0
+    for i in range(26):
+        for j in range(26):
+            if dist[i,j] != 0:
+                c += 1
+    print(c)
