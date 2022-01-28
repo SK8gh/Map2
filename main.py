@@ -2,14 +2,14 @@ from get_distances import *
 
 
 def go():
-    number_threads = 10
+    number_threads = 50
     get_distance_instance = GetDistances(dict_coordinates, places_names)
     get_distance_instance.run_threads(number_threads)
     np.save('/Users/miller/Desktop/MAP2/data/distances.npy', get_distance_instance.distances)
 
 
 if __name__ == '__main__':
-    go()
+    # go()
 
     dist = np.load('/Users/miller/Desktop/MAP2/data/distances.npy', allow_pickle=True)
 
