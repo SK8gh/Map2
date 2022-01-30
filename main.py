@@ -1,4 +1,4 @@
-from mapping import *
+from get_distances import *
 
 
 def go():
