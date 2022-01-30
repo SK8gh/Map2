@@ -7,3 +7,4 @@ places_sub_list = places = ['Châtelet', 'Nation', 'Château de Vincennes', 'CDG
          'Trocadéro', 'Montparnasse', 'Montrouge', 'Gare du Nord', 'Anatole France', 'Gambetta', 'Cité', 'Pasteur',
          'République', 'Glacière', 'Kléber', 'Place de Clichy', 'Porte de la Chapelle']
 
+article_title = "Paris is smaller is your ride a motorcycle"

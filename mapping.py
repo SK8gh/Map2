@@ -23,9 +23,11 @@ dict_coordinates = {place: dict_coordinates_load[place] for place in places_name
 
 
 class GetDistances:
-    def __init__(self, coordinates, places):
+    def __init__(self, coordinates, places, vehicle_type):
+        self.vehicle_type = vehicle_type
         self.coordinates = coordinates
         self.places = places
+        self.heap = None
         self.redo = {}
 
         self.distances = np.zeros([len(places), len(places)])
@@ -43,13 +45,15 @@ class GetDistances:
         if not self.heap:
             return
 
+        vehicle_type = self.vehicle_type
+
         while self.heap:
             index1, index2 = self.heap.heappop()
             try:
                 from_address = self.coordinates[self.places[index1]]
                 to_address = self.coordinates[self.places[index2]]
                 region = 'EU'
-                route = WazeRouteCalculator.WazeRouteCalculator(from_address, to_address, region)
+                route = WazeRouteCalculator.WazeRouteCalculator(from_address, to_address, region, vehicle_type)
 
                 self.distances[index1, index2] = route.calc_route_info()[0]
                 self.redo[(index1, index2)] += 1
@@ -126,9 +130,9 @@ def plot_map(labelling=False, radius=None, place=None):
     # Plot orientation, comparing the positions of Montrouge and Pasteur
     index_pasteur, index_montrouge = places_names.index('Pasteur'), places_names.index('Montrouge')
 
-    if x[index_pasteur] < x[index_montrouge]:
+    if x[index_montrouge] < x[index_pasteur]:
         x = [- elt for elt in x]
-    if y[index_pasteur] > y[index_montrouge]:
+    if y[index_montrouge] > y[index_pasteur]:
         y = [- elt for elt in y]
 
     fig, ax = plt.subplots()
@@ -151,4 +155,4 @@ def plot_map(labelling=False, radius=None, place=None):
 
 # plot_map(labelling=False)
 
-plot_map(labelling=True)
+# plot_map(labelling=True)
