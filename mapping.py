@@ -30,7 +30,8 @@ class GetDistances:
         self.heap = None
         self.redo = {}
 
-        self.distances = np.zeros([len(places), len(places)])
+        self.times = np.zeros([len(places), len(places)])
+        self.speeds = np.zeros([len(places), len(places)])
 
     def add_attr_heap(self):
         heap = Heap()
@@ -55,12 +56,16 @@ class GetDistances:
                 region = 'EU'
                 route = WazeRouteCalculator.WazeRouteCalculator(from_address, to_address, region, vehicle_type)
 
-                self.distances[index1, index2] = route.calc_route_info()[0]
+                self.times[index1, index2] = route.calc_route_info()[0]
                 self.redo[(index1, index2)] += 1
 
-                print(f"Distance from {self.places[index1]} to {self.places[index2]} = {self.distances[index1, index2]}")
+                if route.calc_route_info()[0] != 0:
+                    self.speeds[index1, index2] = route.calc_route_info()[1] / route.calc_route_info()[0]
+
+                print(f"Distance from {self.places[index1]} to {self.places[index2]} = {self.times[index1, index2]}")
 
             except Exception:
+                print(f"Exception raised for {self.places[index1]} to {self.places[index2]}")
                 if self.redo[(index1, index2)] < 2:
                     self.heap.heappush((index1, index2))
 
@@ -82,9 +87,13 @@ class GetDistances:
         for t in threads:
             t.join()
 
+    def average_speed(self):
+        speed_values = [elt for elt in self.speeds.reshape(self.speeds.shape[0] ** 2) if elt != 0]
+        return np.mean(speed_values)
 
-def get_positions():
-    times = np.load('/Users/miller/Desktop/MAP2/data/distances.npy', allow_pickle=True)
+
+def get_positions(vehicle_type):
+    times = np.load(f"/Users/miller/Desktop/MAP2/data/times_{vehicle_type}.npy", allow_pickle=True)
     len_times = len(times)
 
     def get_error(args):
@@ -103,29 +112,13 @@ def get_positions():
     return min_result
 
 
-def plot_map(labelling=False, radius=None, place=None):
+def plot_map(vehicle_type, labelling=False, radius=None, place=None):
     if radius is not None and place is None:
         raise ValueError("Must provide a place name (str) if radius = True")
 
-    pts_values = get_positions().x
+    pts_values = get_positions(vehicle_type).x
     len_values = int(len(pts_values) / 2)
     x, y = pts_values[:len_values], pts_values[len_values:]
-
-    # len_values = 26
-
-    # x = [8.91254995, -12.17516123, -15.72134663, 9.28512626, 4.57139819,
-    #         8.82307475, -1.05812682, -8.61957861, 7.39634822, 5.68787915,
-    #         -8.21628939, -9.13702954, -7.79833336, 8.04354382, 0.26302326,
-    #         -5.46894509, 0.70362746, 6.97329319, -11.94363191, -6.33307449,
-    #         3.04327222, -3.61078547, -5.16059223, 7.53090863, 6.93802962,
-    #         -1.9167224]
-
-    # y = [4.80762397, -0.37056648, 1.66658083, 1.3119542, 0.79731625,
-    #         -0.54921391, 10.69191471, 5.52590189, 11.51914474, 7.53897132,
-    #         9.58941228, -7.98648997, -8.04476173, 3.77945517, 12.77069461,
-    #         13.536569, -11.16410718, -6.88493783, -5.51220762, 1.09621636,
-    #         11.23200394, -3.8676266, 11.54619351, 0.84790804, -5.26445966,
-    #         -9.55128235]
 
     # Plot orientation, comparing the positions of Montrouge and Pasteur
     index_pasteur, index_montrouge = places_names.index('Pasteur'), places_names.index('Montrouge')
@@ -137,8 +130,10 @@ def plot_map(labelling=False, radius=None, place=None):
 
     fig, ax = plt.subplots()
 
+    color = 'purple' if vehicle_type == "TAXI" else 'red'
+
     for i in range(len_values):
-        ax.scatter(x[i], y[i], color='purple')
+        ax.scatter(x[i], y[i], color=color)
 
     if labelling:
         for i in range(len_values):
@@ -153,6 +148,10 @@ def plot_map(labelling=False, radius=None, place=None):
     plt.show()
 
 
-# plot_map(labelling=False)
+# plot_map("TAXI", labelling=True)
 
-# plot_map(labelling=True)
+# plot_map("MOTORCYCLE", labelling=True)
+
+# plot_map("TAXI", labelling=False)
+
+# plot_map("MOTORCYCLE", labelling=False)
