@@ -70,7 +70,7 @@ class GetDistances:
                     self.heap.heappush((index1, index2))
 
             finally:
-                time.sleep(2)
+                time.sleep(1.5)
 
     def run_threads(self, nb_threads):
         threads = []
