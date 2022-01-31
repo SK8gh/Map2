@@ -55,17 +55,17 @@ class GetDistances:
                 to_address = self.coordinates[self.places[index2]]
                 region = 'EU'
                 route = WazeRouteCalculator.WazeRouteCalculator(from_address, to_address, region, vehicle_type)
+                result = route.calc_route_info()
 
-                self.times[index1, index2] = route.calc_route_info()[0]
+                self.times[index1, index2] = result[0]
                 self.redo[(index1, index2)] += 1
 
-                if route.calc_route_info()[0] != 0:
-                    self.speeds[index1, index2] = route.calc_route_info()[1] / route.calc_route_info()[0]
+                if result[0] != 0:
+                    self.speeds[index1, index2] = result[1] / result[0]
 
-                print(f"Distance from {self.places[index1]} to {self.places[index2]} = {self.times[index1, index2]}")
+                # print(f"Distance from {self.places[index1]} to {self.places[index2]} = {self.times[index1, index2]}")
 
-            except Exception:
-                print(f"Exception raised for {self.places[index1]} to {self.places[index2]}")
+            except Exception :
                 if self.redo[(index1, index2)] < 2:
                     self.heap.heappush((index1, index2))
 
@@ -146,9 +146,6 @@ def plot_map(vehicle_type, labelling=False, radius=None, place=None):
         ax.legend([circle_plot], ['10 minutes away from ' + place], loc='upper left')
 
     plt.show()
-
-
-# plot_map("TAXI", labelling=True)
 
 # plot_map("MOTORCYCLE", labelling=True)
 
