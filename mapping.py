@@ -121,11 +121,11 @@ def plot_map(vehicle_type, labelling=False, radius=None, place=None):
     x, y = pts_values[:len_values], pts_values[len_values:]
 
     # Plot orientation, comparing the positions of Montrouge and Pasteur
-    index_pasteur, index_montrouge = places_names.index('Pasteur'), places_names.index('Montrouge')
+    index_ourcq, index_montrouge = places_names.index('Ourcq'), places_names.index('Montrouge')
 
-    if x[index_montrouge] < x[index_pasteur]:
+    if x[index_montrouge] > x[index_ourcq]:
         x = [- elt for elt in x]
-    if y[index_montrouge] > y[index_pasteur]:
+    if y[index_montrouge] > y[index_ourcq]:
         y = [- elt for elt in y]
 
     fig, ax = plt.subplots()
@@ -146,9 +146,3 @@ def plot_map(vehicle_type, labelling=False, radius=None, place=None):
         ax.legend([circle_plot], ['10 minutes away from ' + place], loc='upper left')
 
     plt.show()
-
-# plot_map("MOTORCYCLE", labelling=True)
-
-# plot_map("TAXI", labelling=False)
-
-# plot_map("MOTORCYCLE", labelling=False)
