@@ -134,7 +134,7 @@ def get_positions(vehicle_type):
     :param vehicle_type: TAXI or MOTORCYCLE
     :return: optimized positions
     """
-    times = np.load(f"/Users/miller/Desktop/MAP2/data/times_{vehicle_type}.npy", allow_pickle=True)
+    times = np.load(f".../Desktop/MAP2/data/times_{vehicle_type}.npy", allow_pickle=True)
     len_times = len(times)
 
     # We will minimize the following get_error function that returns the error committed by the current mapping
